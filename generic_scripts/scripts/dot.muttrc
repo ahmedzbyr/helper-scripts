@@ -1,0 +1,33 @@
+# Header stuff
+ignore "Authentication-Results:"
+ignore "DomainKey-Signature:"
+ignore "DKIM-Signature:"
+hdr_order Date From To Cc
+
+ignore *
+unignore from: date subject to cc
+unignore x-mailing-list: posted-to:
+unignore x-mailer:
+
+# For better looks
+set markers=no # don't put '+' at the beginning of wrapped lines
+set pager_index_lines= 5 # how large is the index window?
+set sort = 'threads'
+set sort_aux = 'last-date-received'
+
+# My Editor
+set editor='vim + -c "set textwidth=72" -c "set wrap" -c "set nocp" -c "?^$"'
+
+
+set from = "zubair.ahmed@domain.com"
+set realname = "Ahmed"
+# Non Google App users can just enter the username without the domain name like below.
+#set smtp_url = "smtp://zubair.ahmed@smtp.gmail.com:587/"
+#To use google apps make sure your email account is transitioned - check with our Google Email Administrator
+set smtp_url = "smtp://zubair.ahmed@domain.com@smtp.gmail.com:587/"
+set smtp_pass = "PasswordHere"
+set header_cache =~/.mutt/cache/headers
+set message_cachedir =~/.mutt/cache/bodies
+set certificate_file =~/.mutt/certificates
+
+

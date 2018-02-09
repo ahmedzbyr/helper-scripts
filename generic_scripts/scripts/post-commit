@@ -1,0 +1,49 @@
+#!/bin/sh
+
+#
+# PreDefined Information
+#
+REPOS="$1"
+REV="$2"
+
+#
+# Change below parameters as Required.
+#
+LOCAL_BACKUP_PATH=/home/ahmed/SVNREPOS_TEST/test_backup_incremental
+REMOTE_BACKUP_PATH=/home/ahmed/SVNREPOS_TEST/test_backup_full
+LOCAL_MOUNT_BACKUP_PATH=/home/ahmed/SVNREPOS_TEST/test_backup_full
+REMOTE_USER="backup_trusted_user"
+REMOTE_SERVER="remote.server.com"
+# Give Email Separated by Space( ) here.
+EMAIL_GROUP="ahmedzbyr@gmail.com ahmed@gmail.com"
+
+#
+# you need NOT TOUCH THIS !!
+#
+DATE=`date '+%d'-'%m'-'%Y'-'%H':'%M':'%S'`
+BACKUP_FILENAME=commit-inc-ver\($REV\)-$DATE.bkp'.gz'
+DIFF_FILENAME=diff-inc-ver\($REV\)-$DATE.gz
+
+
+#
+# Taking backup and rsync to a remote server.
+#
+svnadmin dump "$REPOS" --revision "$REV" --incremental | gzip > $LOCAL_BACKUP_PATH/$BACKUP_FILENAME
+#rsync -avzh -e ssh $LOCAL_BACKUP_PATH  $REMOTE_USER@$REMOTE_SERVER:$REMOTE_BACKUP_PATH
+
+
+#
+# Can be backed-up on a Local mount Drive.
+# Have commented this for now - as we might not have a mount DRIVE
+#
+#cp $LOCAL_BACKUP_PATH/$BACKUP_FILENAME $LOCAL_MOUNT_BACKUP_PATH
+
+
+#
+# Now lets send mail to all the people - using mutt :)
+#
+svnlook diff $REPOS -r $REV | gzip > $DIFF_FILENAME
+mutt -s "SVN Commit Complete - Back-Up for Version $REV" $EMAIL_GROUP < /dev/null -a $DIFF_FILENAME
+rm $DIFF_FILENAME
+
+
